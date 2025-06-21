@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- Sets language to English -->
+<head>
+  <!-- Meta tags for character encoding and responsive viewport -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Page title shown in browser tab -->
+  <title>Currency Converter</title>
+  
+  <!-- Link to external CSS stylesheet -->
+  <link rel="stylesheet" href="Currency.css">
+</head>
+<body>
+  <!-- Main container for the converter -->
+  <div class="converter-container">
+    <!-- Heading -->
+    <h2 >Currency Converter</h2>
+    
+    <!-- Form for user input -->
+    <form id="converterForm">
+      <div class="input-group">
+        <!-- Currency selection section -->
+        <div class="currency-selector">
+          <!-- "From" currency dropdown -->
+          <label for="fromCurrency">From:</label>
+          <select id="fromCurrency" required></select> <!-- Will be populated by JavaScript -->
+          
+          <!-- Switch button to swap currencies -->
+          <button type="button" id="switchBtn" aria-label="Switch currencies" alt="Switch the Currencies">⇄</button>
+          
+          <!-- "To" currency dropdown -->
+          <label for="toCurrency">To:</label>
+          <select id="toCurrency" required></select> <!-- Will be populated by JavaScript -->
+        </div>
+        
+        <!-- Amount input field -->
+        <input 
+          type="number" 
+          id="amount" 
+          placeholder="Amount here" 
+          min="0"        
+          step="0.01"      
+          required         
+        >
+        
+        <!-- Convert button -->
+        <button type="submit" id="convertBtn">Convert</button>
+      </div>
+    </form>
+    
+    <!-- Result display area -->
+    <div id="result"></div>
+    
+    <!-- Error message display area -->
+    <div id="error" class="error-message"></div>
+  </div>
+  
+  <!-- Link to external JavaScript file (loads at end of body for better performance) -->
+  <script src="Currency.js"></script>
+</body>
+</html>
+
+

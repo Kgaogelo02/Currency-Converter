@@ -1,0 +1,90 @@
+body {
+  font-family: Arial, sans-serif;
+  background-image: url('background.png'); /* Background image */
+  background-size: cover;                  /* Make image fill screen */
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #903769;
+  margin: 0;
+}
+
+.converter-container {
+  background: rgb(83, 51, 163);
+  text-align: center;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(23, 186, 94, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+
+h1 {
+  text-align: center;
+  color: #b7d947;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.currency-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+select, input {
+  padding: 0.5rem;
+  border: 1px solid #b8b4b4;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+select {
+  flex-grow: 1;
+  min-width: 120px;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background-color: #020c17;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#switchBtn {
+  background-color: #6c757d;
+}
+
+#switchBtn:hover {
+  background-color: #5a6268;
+}
+
+#result {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+  
