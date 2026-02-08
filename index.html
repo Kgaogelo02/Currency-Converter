@@ -1,62 +1,157 @@
 <!DOCTYPE html>
-<html lang="en"> <!-- Sets language to English -->
+<html lang="en">
 <head>
-  <!-- Meta tags for character encoding and responsive viewport -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Professional currency converter supporting 163+ world currencies with real-time exchange rates">
+  <meta name="keywords" content="currency converter, exchange rates, forex, cryptocurrency, 160+ currencies">
+  <meta name="author" content="Mabutsi Kgaogelo">
   
-  <!-- Page title shown in browser tab -->
-  <title>Currency Converter</title>
+  <title>Currency Converter - 163+ World Currencies</title>
   
-  <!-- Link to external CSS stylesheet -->
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Preconnect to API domains for faster loading -->
+  <link rel="preconnect" href="https://api.frankfurter.app">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
 </head>
 <body>
   <!-- Main container for the converter -->
   <div class="converter-container">
-    <!-- Heading -->
-    <h2 >Currency Converter</h2>
+    <!-- Header section -->
+    <header class="converter-header">
+      <h1 class="converter-title"> Currency Converter</h1>
+      <p class="converter-subtitle">
+        <span id="currencyCounter">Loading currencies...</span>
+        <span class="status-indicator" id="statusIndicator" title="Connection status">●</span>
+      </p>
+    </header>
     
-    <!-- Form for user input -->
-    <form id="converterForm">
+    <!-- Main converter form -->
+    <form id="converterForm" class="converter-form">
       <div class="input-group">
         <!-- Currency selection section -->
         <div class="currency-selector">
-          <!-- "From" currency dropdown -->
-          <label for="fromCurrency">From:</label>
-          <select id="fromCurrency" required></select> <!-- Will be populated by JavaScript -->
+          <!-- "From" currency -->
+          <div class="currency-input-wrapper">
+            <label for="fromCurrency" class="currency-label">From:</label>
+            <select id="fromCurrency" class="currency-select" required aria-label="From currency">
+              <option value="">Loading 163+ currencies...</option>
+            </select>
+          </div>
           
-          <!-- Switch button to swap currencies -->
-          <button type="button" id="switchBtn" aria-label="Switch currencies" alt="Switch the Currencies">⇄</button>
+          <!-- Switch button -->
+          <button 
+            type="button" 
+            id="switchBtn" 
+            class="switch-btn" 
+            aria-label="Switch currencies"
+            title="Swap currencies (Ctrl/Cmd + S)"
+          >
+            <span class="switch-icon">⇄</span>
+          </button>
           
-          <!-- "To" currency dropdown -->
-          <label for="toCurrency">To:</label>
-          <select id="toCurrency" required></select> <!-- Will be populated by JavaScript -->
+          <!-- "To" currency -->
+          <div class="currency-input-wrapper">
+            <label for="toCurrency" class="currency-label">To:</label>
+            <select id="toCurrency" class="currency-select" required aria-label="To currency">
+              <option value="">Loading 163+ currencies...</option>
+            </select>
+          </div>
         </div>
         
         <!-- Amount input field -->
-        <input 
-          type="number" 
-          id="amount" 
-          placeholder="Amount here" 
-          min="0"        
-          step="0.01"      
-          required         
-        >
+        <div class="amount-input-wrapper">
+          <label for="amount" class="amount-label">Amount:</label>
+          <input 
+            type="number" 
+            id="amount" 
+            class="amount-input"
+            placeholder="Enter amount" 
+            min="0.01"        
+            step="0.01"
+            max="999999999"      
+            required
+            aria-label="Amount to convert"
+            autocomplete="off"
+          >
+        </div>
         
         <!-- Convert button -->
-        <button type="submit" id="convertBtn">Convert</button>
+        <button type="submit" id="convertBtn" class="convert-btn">
+          <span class="btn-text"> Convert</span>
+          <span class="btn-loading" style="display: none;">Converting...</span>
+        </button>
       </div>
     </form>
     
     <!-- Result display area -->
-    <div id="result"></div>
+    <div id="result" class="result-display" role="status" aria-live="polite"></div>
     
     <!-- Error message display area -->
-    <div id="error" class="error-message"></div>
+    <div id="error" class="error-message" role="alert" aria-live="assertive"></div>
+    
+    <!-- Additional features section -->
+    <div class="features-section">
+      <!-- Quick conversion history -->
+      <div class="history-section" id="historySection" style="display: none;">
+        <h3 class="section-title"> Recent Conversions</h3>
+        <div id="historyList" class="history-list"></div>
+        <button type="button" id="clearHistoryBtn" class="clear-history-btn">Clear History</button>
+      </div>
+      
+      <!-- Popular currency pairs -->
+      <div class="popular-pairs-section">
+        <h3 class="section-title"> Quick Convert</h3>
+        <div class="popular-pairs" id="popularPairs">
+          <button type="button" class="pair-btn" data-from="USD" data-to="EUR">USD → EUR</button>
+          <button type="button" class="pair-btn" data-from="EUR" data-to="USD">EUR → USD</button>
+          <button type="button" class="pair-btn" data-from="GBP" data-to="USD">GBP → USD</button>
+          <button type="button" class="pair-btn" data-from="USD" data-to="JPY">USD → JPY</button>
+          <button type="button" class="pair-btn" data-from="USD" data-to="CNY">USD → CNY</button>
+          <button type="button" class="pair-btn" data-from="USD" data-to="INR">USD → INR</button>
+        </div>
+      </div>
+      
+      <!-- Currency stats -->
+      <div class="stats-section">
+        <h3 class="section-title">📈 Currency Coverage</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-number" id="currencyCount">163</span>
+            <span class="stat-label">Currencies</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">7</span>
+            <span class="stat-label">Cryptos</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">4</span>
+            <span class="stat-label">Metals</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">150+</span>
+            <span class="stat-label">Countries</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="converter-footer">
+      <div class="api-attribution">
+        <small>Powered by real-time exchange rate APIs • 163+ currencies supported</small>
+      </div>
+    </footer>
   </div>
   
-  <!-- Link to external JavaScript file (loads at end of body for better performance) -->
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p>Loading 163+ world currencies...</p>
+  </div>
+  
+  <!-- Link to external JavaScript file -->
   <script src="script.js"></script>
 </body>
 </html>
