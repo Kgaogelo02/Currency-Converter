@@ -164,6 +164,7 @@ Potential features for future versions:
 - [ ] **Rate Alerts** - Notify when rates hit targets
 
 ---
+[Click here to view it](https://kgaogelo02.github.io/Currency-Converter/)
 
 ## 👨‍💻 Author
 
