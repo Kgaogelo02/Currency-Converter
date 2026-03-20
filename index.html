@@ -14,13 +14,16 @@
   <!-- Preconnect to API domains for faster loading -->
   <link rel="preconnect" href="https://api.frankfurter.app">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  
+  <!-- Chart.js for historical rate charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <!-- Main container for the converter -->
   <div class="converter-container">
     <!-- Header section -->
     <header class="converter-header">
-      <h1 class="converter-title"> Currency Converter</h1>
+      <h1 class="converter-title">💱 Currency Converter</h1>
       <p class="converter-subtitle">
         <span id="currencyCounter">Loading currencies...</span>
         <span class="status-indicator" id="statusIndicator" title="Connection status">●</span>
@@ -79,7 +82,7 @@
         
         <!-- Convert button -->
         <button type="submit" id="convertBtn" class="convert-btn">
-          <span class="btn-text"> Convert</span>
+          <span class="btn-text">Convert</span>
           <span class="btn-loading" style="display: none;">Converting...</span>
         </button>
       </div>
@@ -91,18 +94,40 @@
     <!-- Error message display area -->
     <div id="error" class="error-message" role="alert" aria-live="assertive"></div>
     
+    <!-- Historical Rate Chart Section -->
+    <div class="chart-section" id="chartSection" style="display: none;">
+      <div class="chart-header">
+        <h3 class="section-title">Exchange Rate Trend</h3>
+        <div class="chart-controls">
+          <select id="chartTimeframe" class="chart-timeframe-select">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="365">Last year</option>
+          </select>
+          <button type="button" id="refreshChartBtn" class="refresh-chart-btn" title="Refresh chart data">
+            🔄
+          </button>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="rateChart"></canvas>
+      </div>
+      <div class="chart-info" id="chartInfo"></div>
+    </div>
+    
     <!-- Additional features section -->
     <div class="features-section">
       <!-- Quick conversion history -->
       <div class="history-section" id="historySection" style="display: none;">
-        <h3 class="section-title"> Recent Conversions</h3>
+        <h3 class="section-title">Recent Conversions</h3>
         <div id="historyList" class="history-list"></div>
         <button type="button" id="clearHistoryBtn" class="clear-history-btn">Clear History</button>
       </div>
       
       <!-- Popular currency pairs -->
       <div class="popular-pairs-section">
-        <h3 class="section-title"> Quick Convert</h3>
+        <h3 class="section-title">Quick Convert</h3>
         <div class="popular-pairs" id="popularPairs">
           <button type="button" class="pair-btn" data-from="USD" data-to="EUR">USD → EUR</button>
           <button type="button" class="pair-btn" data-from="EUR" data-to="USD">EUR → USD</button>
@@ -155,5 +180,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
