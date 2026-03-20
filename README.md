@@ -1,4 +1,4 @@
-# 💱 Currency Converter
+#  Currency Converter
 
 > A modern, real-time currency conversion application with intelligent caching and comprehensive error handling.
 
@@ -6,18 +6,32 @@
 
 ---
 
-## 🚀 Features
+## Features
 
-- ✨ **Real-time Exchange Rates** - Live data from reliable API sources
-- 🌍 **170+ Currencies** - Support for all major global currencies
-- ⚡ **Smart Caching** - Reduces API calls by 80%
-- 📊 **Conversion History** - Track your recent conversions
-- 📱 **Fully Responsive** - Works seamlessly on all devices
-- 🔄 **Offline Fallback** - Works even when API is unavailable
+-  **Real-time Exchange Rates** - Live data from reliable API sources
+-  **170+ Currencies** - Support for all major global currencies
+-  **Smart Caching** - Reduces API calls by 80%
+-  **Conversion History** - Track your recent conversions
+-  **Historical Rate Charts** - Visualize exchange rate trends over time
+-  **Fully Responsive** - Works seamlessly on all devices
+-  **Offline Fallback** - Works even when API is unavailable
 
 ---
 
-## 💰 Currency Coverage
+## Historical Rate Charts
+
+Track exchange rate trends with interactive visualizations:
+
+- **Multiple Timeframes** - View rates for 7, 30, 90 days, or 1 year
+- **Interactive Charts** - Hover to see exact rates on specific dates
+- **Trend Analysis** - Identify patterns and rate movements
+- **Real-time Updates** - Refresh chart data with one click
+
+The chart automatically displays after each conversion, showing how the exchange rate has changed over time.
+
+---
+
+## Currency Coverage
 
 Our converter supports a comprehensive range of currencies and assets:
 
@@ -25,23 +39,23 @@ Our converter supports a comprehensive range of currencies and assets:
 
 | Category | Count | Examples |
 |----------|-------|----------|
-| 💵 **Fiat Currencies** | 164 | USD, EUR, GBP, JPY, ZAR, INR, AUD, CAD |
-| ₿ **Cryptocurrencies** | 7 | BTC, ETH, LTC, XRP, BCH, BNB, ADA |
-| 🥇 **Precious Metals** | 4 | XAU (Gold), XAG (Silver), XPT (Platinum), XPD (Palladium) |
-| 📊 **Total Coverage** | 175+ | Comprehensive global coverage |
+| **Fiat Currencies** | 164 | USD, EUR, GBP, JPY, ZAR, INR, AUD, CAD |
+| **Cryptocurrencies** | 7 | BTC, ETH, LTC, XRP, BCH, BNB, ADA |
+| **Precious Metals** | 4 | XAU (Gold), XAG (Silver), XPT (Platinum), XPD (Palladium) |
+| **Total Coverage** | 175+ | Comprehensive global coverage |
 
 </div>
 
 ### Supported Regions
-- 🌍 **Africa** - All major African currencies including ZAR, NGN, KES, EGP
-- 🌎 **Americas** - USD, CAD, BRL, MXN, ARS and more
-- 🌏 **Asia-Pacific** - JPY, CNY, INR, SGD, AUD, KRW and more
-- 🌍 **Europe** - EUR, GBP, CHF, SEK, NOK, PLN and more
-- 🌍 **Middle East** - AED, SAR, QAR, ILS, TRY and more
+-  **Africa** - All major African currencies including ZAR, NGN, KES, EGP
+-  **Americas** - USD, CAD, BRL, MXN, ARS and more
+-  **Asia-Pacific** - JPY, CNY, INR, SGD, AUD, KRW and more
+-  **Europe** - EUR, GBP, CHF, SEK, NOK, PLN and more
+-  **Middle East** - AED, SAR, QAR, ILS, TRY and more
 
 ---
 
-## 📸 Application Preview
+## Application Preview
 
 ### Conversion Result
 ![Conversion Result](./conversion-result.png)
@@ -59,10 +73,10 @@ Our converter supports a comprehensive range of currencies and assets:
 
 ---
 
-## 🎯 Quick Start
+## Quick Start
 
 ### Live Demo
-**[🌐 Try it now →](https://kgaogelo02.github.io/Currency-Converter/)**
+**[ Try it now →](https://kgaogelo02.github.io/Currency-Converter/)**
 
 ### Local Installation
 ```bash
@@ -78,7 +92,7 @@ open index.html
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### System Design
 
@@ -167,7 +181,7 @@ Display Result to User
 
 ---
 
-## ⚡ Performance Optimization
+## Performance Optimization
 
 ### Caching Strategy
 - **Currency List**: 24-hour cache duration
@@ -192,7 +206,7 @@ Display Result to User
 
 ---
 
-## 🌐 Browser Compatibility
+##  Browser Compatibility
 
 ### Desktop Browsers
 | Browser | Minimum Version | Status |
@@ -211,7 +225,7 @@ Display Result to User
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **API**: ExchangeRate-API / Fawaz Ahmed Currency API
@@ -221,7 +235,7 @@ Display Result to User
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Issue: "Failed to load currencies"
 
@@ -251,11 +265,10 @@ Display Result to User
 
 ---
 
-## 📈 Future Enhancements
+##  Future Enhancements
 
 Planned features for upcoming versions:
 
-- [ ] **Historical Rate Charts** - Visualize exchange rate trends over time
 - [ ] **Multi-Currency Comparison** - Compare multiple currencies simultaneously
 - [ ] **Export Functionality** - Download conversion history as CSV/PDF
 - [ ] **Dark/Light Theme Toggle** - User-selectable color schemes
@@ -267,7 +280,7 @@ Planned features for upcoming versions:
 
 ---
 
-## 📝 How to Use
+##  How to Use
 
 1. **Select Source Currency** - Choose from 175+ currencies, cryptos, or metals
 2. **Select Target Currency** - Pick your desired conversion target
@@ -277,7 +290,7 @@ Planned features for upcoming versions:
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Mabutsi Kgaogelo**
 
@@ -286,7 +299,7 @@ Planned features for upcoming versions:
 
 ---
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Exchange rate data provided by [ExchangeRate-API](https://www.exchangerate-api.com/)
 - Currency data from [Fawaz Ahmed's Currency API](https://github.com/fawazahmed0/currency-api)
@@ -295,7 +308,7 @@ Planned features for upcoming versions:
 ---
 
 <p align="center">
-  <strong>Made with ❤️ by Mabutsi Kgaogelo</strong>
+  <strong>Made with Love by Mabutsi Kgaogelo</strong>
 </p>
 
 <p align="center">
