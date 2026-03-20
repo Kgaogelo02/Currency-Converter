@@ -1,32 +1,24 @@
 /**
  * Professional Currency Converter Application
- * Version: 3.1 - Full 163+ Currency Support
  * Features: 163+ world currencies, cryptocurrencies, metals with real-time rates
  * Author: Mabutsi Kgaogelo
  */
 
-// ============================================================================
-// CONFIGURATION & CONSTANTS
-// ============================================================================
-
 const CONFIG = {
-  // API endpoints with fallback support
   API_ENDPOINTS: {
     primary: 'https://api.frankfurter.app',
     fallback1: 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1',
     fallback2: 'https://open.er-api.com/v6/latest'
   },
   
-  // Cache settings
   CACHE: {
-    EXPIRY: 24 * 60 * 60 * 1000, // 24 hours
+    EXPIRY: 24 * 60 * 60 * 1000,
     KEY_PREFIX: 'currencyConverter_',
     CURRENCY_LIST_KEY: 'currencies',
     RATES_KEY: 'exchangeRates',
     HISTORY_KEY: 'conversionHistory'
   },
-  
-  // Request settings
+
   REQUEST: {
     TIMEOUT: 5000, // 5 seconds
     MAX_RETRIES: 3,
@@ -47,10 +39,6 @@ const CONFIG = {
     DECIMAL_PLACES: 2
   }
 };
-
-// ============================================================================
-// COMPREHENSIVE CURRENCY DATABASE - 163+ CURRENCIES
-// ============================================================================
 
 const COMPREHENSIVE_CURRENCIES = {
   currencies: [
@@ -146,13 +134,6 @@ const POPULAR_PAIRS = [
   { from: 'USD', to: 'EUR' }
 ];
 
-// ============================================================================
-// UTILITY FUNCTIONS
-// ============================================================================
-
-/**
- * Utility class for common operations
- */
 class Utils {
   /**
    * Format currency for display
@@ -240,13 +221,6 @@ class Utils {
   }
 }
 
-// ============================================================================
-// CACHE MANAGER
-// ============================================================================
-
-/**
- * Manages local storage caching for currencies and rates
- */
 class CacheManager {
   constructor() {
     this.prefix = CONFIG.CACHE.KEY_PREFIX;
@@ -325,13 +299,6 @@ class CacheManager {
   }
 }
 
-// ============================================================================
-// API CLIENT - UPDATED TO USE COMPREHENSIVE LIST DIRECTLY
-// ============================================================================
-
-/**
- * Handles all API requests with error handling and retry logic
- */
 class APIClient {
   constructor() {
     this.cache = new CacheManager();
@@ -566,13 +533,6 @@ class APIClient {
   }
 }
 
-// ============================================================================
-// HISTORY MANAGER
-// ============================================================================
-
-/**
- * Manages conversion history
- */
 class HistoryManager {
   constructor() {
     this.cache = new CacheManager();
@@ -624,13 +584,379 @@ class HistoryManager {
   }
 }
 
-// ============================================================================
-// UI MANAGER - UPDATED TO SHOW ALL CURRENCIES
-// ============================================================================
+class ChartManager {
+  constructor() {
+    this.chart = null;
+    this.currentPair = null;
+    this.historicalData = null;
+    
+    // Don't initialize elements here - do it lazily when needed
+    this.chartCanvas = null;
+    this.chartSection = null;
+    this.chartInfo = null;
+    this.timeframeSelect = null;
+    this.refreshBtn = null;
+  }
+  
+  /**
+   * Initialize chart elements (lazy initialization)
+   */
+  initializeElements() {
+    if (!this.chartCanvas) {
+      this.chartCanvas = document.getElementById('rateChart');
+      this.chartSection = document.getElementById('chartSection');
+      this.chartInfo = document.getElementById('chartInfo');
+      this.timeframeSelect = document.getElementById('chartTimeframe');
+      this.refreshBtn = document.getElementById('refreshChartBtn');
+      
+      // Set up event listeners only once
+      if (this.timeframeSelect && !this.timeframeSelect.dataset.initialized) {
+        this.timeframeSelect.dataset.initialized = 'true';
+        this.timeframeSelect.addEventListener('change', () => {
+          if (this.currentPair) {
+            this.loadAndDisplayChart(this.currentPair.from, this.currentPair.to);
+          }
+        });
+      }
+      
+      if (this.refreshBtn && !this.refreshBtn.dataset.initialized) {
+        this.refreshBtn.dataset.initialized = 'true';
+        this.refreshBtn.addEventListener('click', () => {
+          if (this.currentPair) {
+            this.loadAndDisplayChart(this.currentPair.from, this.currentPair.to, true);
+          }
+        });
+      }
+    }
+  }
+  
+  /**
+   * Initialize chart event listeners
+   */
+  initializeEventListeners() {
+    // Moved to initializeElements()
+  }
+  
+  /**
+   * Load and display historical rates chart
+   */
+  async loadAndDisplayChart(from, to, forceRefresh = false) {
+    try {
+      // Initialize elements if not already done
+      this.initializeElements();
+      
+      // Check if elements exist
+      if (!this.chartSection || !this.chartCanvas) {
+        console.warn('Chart elements not found in DOM');
+        return;
+      }
+      
+      this.currentPair = { from, to };
+      const days = parseInt(this.timeframeSelect?.value || '30');
+      
+      // Show loading state
+      this.showLoadingState();
+      this.chartSection.style.display = 'block';
+      
+      // Fetch historical data
+      const data = await this.fetchHistoricalRates(from, to, days, forceRefresh);
+      
+      if (!data || data.length === 0) {
+        this.showError('No historical data available for this currency pair');
+        return;
+      }
+      
+      // Re-initialize canvas after loading state
+      this.chartCanvas = document.getElementById('rateChart');
+      
+      // Display chart
+      this.displayChart(data, from, to);
+      
+      // Update chart info
+      this.updateChartInfo(data, from, to);
+      
+    } catch (error) {
+      console.error('Chart error:', error);
+      this.showError('Failed to load historical data');
+    }
+  }
+  
+  /**
+   * Fetch historical exchange rates
+   */
+  async fetchHistoricalRates(from, to, days, forceRefresh = false) {
+    const cacheKey = `historical_${from}_${to}_${days}`;
+    const cache = new CacheManager();
+    
+    // Check cache first (unless force refresh)
+    if (!forceRefresh) {
+      const cached = cache.get(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    }
+    
+    try {
+      // Calculate date range
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
+      
+      const startStr = startDate.toISOString().split('T')[0];
+      const endStr = endDate.toISOString().split('T')[0];
+      
+      // Fetch from Frankfurter API (supports historical data)
+      const url = `https://api.frankfurter.app/${startStr}..${endStr}?from=${from}&to=${to}`;
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      const response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch historical data');
+      }
+      
+      const json = await response.json();
+      
+      // Convert to array format
+      const data = Object.entries(json.rates).map(([date, rates]) => ({
+        date,
+        rate: rates[to]
+      })).sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+      // Cache the data (1 hour expiry for historical data)
+      cache.set(cacheKey, data, 60 * 60 * 1000);
+      
+      return data;
+      
+    } catch (error) {
+      console.error('Error fetching historical rates:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Display chart with historical data
+   */
+  displayChart(data, from, to) {
+    // Destroy existing chart
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
+    }
+    
+    // Get canvas element
+    const canvas = document.getElementById('rateChart');
+    if (!canvas) {
+      console.error('Canvas element not found');
+      return;
+    }
+    
+    // Remove loading message
+    const loadingDiv = document.querySelector('.chart-loading');
+    if (loadingDiv) {
+      loadingDiv.remove();
+    }
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Prepare data for Chart.js
+    const labels = data.map(d => d.date);
+    const rates = data.map(d => d.rate);
+    
+    // Create gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(23, 186, 94, 0.3)');
+    gradient.addColorStop(1, 'rgba(23, 186, 94, 0.05)');
+    
+    this.chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: `${from}/${to} Exchange Rate`,
+          data: rates,
+          borderColor: '#17ba5e',
+          backgroundColor: gradient,
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+          pointBackgroundColor: '#17ba5e',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#17ba5e',
+          pointHoverBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              color: '#333',
+              font: {
+                size: 12,
+                weight: 'bold'
+              }
+            }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            borderColor: '#17ba5e',
+            borderWidth: 1,
+            padding: 10,
+            displayColors: false,
+            callbacks: {
+              label: function(context) {
+                return `Rate: ${context.parsed.y.toFixed(6)}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              color: '#666',
+              maxTicksLimit: 8,
+              font: {
+                size: 10
+              }
+            }
+          },
+          y: {
+            display: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            },
+            ticks: {
+              color: '#666',
+              font: {
+                size: 10
+              },
+              callback: function(value) {
+                return value.toFixed(4);
+              }
+            }
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        }
+      }
+    });
+    
+    console.log('✓ Chart displayed successfully');
+  }
+  
+  /**
+   * Update chart information display
+   */
+  updateChartInfo(data, from, to) {
+    if (!this.chartInfo || data.length === 0) return;
+    
+    const rates = data.map(d => d.rate);
+    const currentRate = rates[rates.length - 1];
+    const firstRate = rates[0];
+    const change = currentRate - firstRate;
+    const changePercent = ((change / firstRate) * 100).toFixed(2);
+    const minRate = Math.min(...rates);
+    const maxRate = Math.max(...rates);
+    const avgRate = (rates.reduce((a, b) => a + b, 0) / rates.length);
+    
+    const changeColor = change >= 0 ? '#27ae60' : '#e74c3c';
+    const changeSymbol = change >= 0 ? '▲' : '▼';
+    
+    this.chartInfo.innerHTML = `
+      <div class="chart-info-item">
+        <span class="chart-info-label">Current Rate</span>
+        <span class="chart-info-value">${currentRate.toFixed(6)}</span>
+      </div>
+      <div class="chart-info-item">
+        <span class="chart-info-label">Change</span>
+        <span class="chart-info-value" style="color: ${changeColor}">
+          ${changeSymbol} ${Math.abs(changePercent)}%
+        </span>
+      </div>
+      <div class="chart-info-item">
+        <span class="chart-info-label">High</span>
+        <span class="chart-info-value">${maxRate.toFixed(6)}</span>
+      </div>
+      <div class="chart-info-item">
+        <span class="chart-info-label">Low</span>
+        <span class="chart-info-value">${minRate.toFixed(6)}</span>
+      </div>
+      <div class="chart-info-item">
+        <span class="chart-info-label">Average</span>
+        <span class="chart-info-value">${avgRate.toFixed(6)}</span>
+      </div>
+    `;
+  }
+  
+  /**
+   * Show loading state
+   */
+  showLoadingState() {
+    const container = document.querySelector('.chart-container');
+    if (container) {
+      container.innerHTML = `
+        <canvas id="rateChart"></canvas>
+        <div class="chart-loading" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
+          <div class="chart-loading-spinner"></div>
+          <p>Loading historical data...</p>
+        </div>
+      `;
+    }
+    
+    if (this.chartInfo) {
+      this.chartInfo.innerHTML = '';
+    }
+  }
+  
+  /**
+   * Show error message
+   */
+  showError(message) {
+    const container = document.querySelector('.chart-container');
+    if (container) {
+      container.innerHTML = `
+        <div class="chart-loading">
+          <p style="color: #e74c3c;">⚠️ ${message}</p>
+        </div>
+      `;
+    }
+  }
+  
+  /**
+   * Hide chart section
+   */
+  hide() {
+    if (this.chartSection) {
+      this.chartSection.style.display = 'none';
+    }
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
+    }
+    this.currentPair = null;
+  }
+}
 
-/**
- * Manages all UI interactions and updates
- */
 class UIManager {
   constructor() {
     this.elements = this.getElements();
@@ -1075,18 +1401,12 @@ class UIManager {
   }
 }
 
-// ============================================================================
-// MAIN APPLICATION
-// ============================================================================
-
-/**
- * Main application class
- */
 class CurrencyConverter {
   constructor() {
     this.api = new APIClient();
     this.history = new HistoryManager();
     this.ui = new UIManager();
+    this.chart = new ChartManager();
     this.isInitialized = false;
   }
   
@@ -1217,6 +1537,9 @@ class CurrencyConverter {
       
       this.ui.updateStatus(true);
       
+      // Load and display historical chart
+      this.chart.loadAndDisplayChart(from, to);
+      
     } catch (error) {
       console.error('Conversion error:', error);
       
@@ -1259,11 +1582,6 @@ class CurrencyConverter {
   }
 }
 
-// ============================================================================
-// APPLICATION INITIALIZATION
-// ============================================================================
-
-// Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     // Create and initialize app
