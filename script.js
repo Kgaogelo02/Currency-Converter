@@ -362,7 +362,7 @@ class APIClient {
    * Fetch available currencies - NOW USES COMPREHENSIVE LIST DIRECTLY
    */
   async fetchCurrencies() {
-    console.log('🔄 Loading comprehensive currency list...');
+    console.log('Loading comprehensive currency list...');
     
     // Always use our comprehensive list as the primary source
     const comprehensiveData = {
@@ -936,7 +936,7 @@ class ChartManager {
     if (container) {
       container.innerHTML = `
         <div class="chart-loading">
-          <p style="color: #e74c3c;">⚠️ ${message}</p>
+          <p style="color: #e74c3c;"> ${message}</p>
         </div>
       `;
     }
@@ -1100,9 +1100,6 @@ class UIManager {
     this.clearError();
   }
   
-  /**
-   * Handle popular pair click
-   */
   handlePopularPair(button) {
     const from = button.dataset.from;
     const to = button.dataset.to;
@@ -1118,18 +1115,12 @@ class UIManager {
     }
   }
   
-  /**
-   * Handle clear history
-   */
   handleClearHistory() {
     if (window.app && window.app.clearHistory) {
       window.app.clearHistory();
     }
   }
   
-  /**
-   * Toggle history visibility
-   */
   toggleHistory() {
     const historySection = document.getElementById('historySection');
     if (historySection) {
@@ -1141,7 +1132,7 @@ class UIManager {
    * Populate currency dropdowns - FIXED TO SHOW ALL CURRENCIES
    */
   populateDropdowns(currencies, names) {
-    console.log(`📊 Populating dropdowns with ${currencies.length} currencies`);
+    console.log(`Populating dropdowns with ${currencies.length} currencies`);
     
     // Clear dropdowns first
     this.elements.fromCurrency.innerHTML = '';
@@ -1301,24 +1292,15 @@ class UIManager {
     this.clearError();
   }
   
-  /**
-   * Show error
-   */
   showError(message) {
     this.elements.error.textContent = message;
     this.hideLoading();
   }
   
-  /**
-   * Clear error
-   */
   clearError() {
     this.elements.error.textContent = '';
   }
   
-  /**
-   * Clear form
-   */
   clearForm() {
     this.elements.amount.value = '';
     this.elements.result.textContent = '';
@@ -1326,9 +1308,6 @@ class UIManager {
     this.elements.amount.focus();
   }
   
-  /**
-   * Update status indicator
-   */
   updateStatus(online) {
     if (this.elements.statusIndicator) {
       if (online) {
@@ -1356,9 +1335,6 @@ class UIManager {
     }
   }
   
-  /**
-   * Update history display
-   */
   updateHistory(history) {
     if (!this.elements.historyList || !this.elements.historySection) return;
     
@@ -1415,7 +1391,7 @@ class CurrencyConverter {
    */
   async initialize() {
     try {
-      console.log('🚀 Initializing Currency Converter v3.1 - 163+ Currencies...');
+      console.log(' Initializing Currency Converter v3.1 - 163+ Currencies...');
       
       this.ui.setLoadingOverlay(true);
       
@@ -1446,7 +1422,7 @@ class CurrencyConverter {
       this.ui.elements.result.innerHTML = `
         <div style="text-align: center;">
           <div style="font-size: 1.2rem; margin-bottom: 8px; color: var(--accent-color);">
-            🎉 Ready to convert!
+            Ready to convert!
           </div>
           <div style="font-size: 0.9rem; opacity: 0.8;">
             Supports ${currencyCount} currencies including Bitcoin, Gold, and 150+ countries
@@ -1523,7 +1499,6 @@ class CurrencyConverter {
         date: rateData.date
       });
       
-      // Add to history
       this.history.add({
         from,
         to,
@@ -1532,7 +1507,6 @@ class CurrencyConverter {
         rate: rateData.rate
       });
       
-      // Update history display
       this.updateHistoryDisplay();
       
       this.ui.updateStatus(true);
@@ -1555,16 +1529,12 @@ class CurrencyConverter {
         errorMessage = `Unable to convert ${from} to ${to}. Please try a different currency pair.`;
       } else if (error.message.includes('Cross-rate')) {
         errorMessage = `Converted via USD intermediate rate. Rate may not be exact.`;
-        // Still show the result if we have it
       }
       
       this.ui.showError(errorMessage);
     }
   }
   
-  /**
-   * Clear conversion history
-   */
   clearHistory() {
     if (confirm('Are you sure you want to clear all conversion history?')) {
       this.history.clear();
@@ -1573,9 +1543,6 @@ class CurrencyConverter {
     }
   }
   
-  /**
-   * Update history display
-   */
   updateHistoryDisplay() {
     const history = this.history.getRecent(5);
     this.ui.updateHistory(history);
